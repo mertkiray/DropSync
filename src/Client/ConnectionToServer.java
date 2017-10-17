@@ -60,7 +60,7 @@ public class ConnectionToServer
             System.err.println("Error: no server has been found on " + serverAddress + "/" + serverPort);
         }
     }
-
+//helloo
     /**
      * sends the message String to the server and retrives the answer
      * @param message input message string to the server

@@ -82,6 +82,8 @@ public class ConnectionToDataServer
         }
     }
     
+    //hellooo
+    
     public String sendFile(String file) throws IOException {
         String response = new String();
 

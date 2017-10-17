@@ -106,6 +106,7 @@ class ClientServiceDataThread extends Thread{
 	          			fos.write(buffer, 0, read);
 	          		}
 	          		
+	          		//helloo
 	          		/*
 	          		dos.writeUTF("hello");
 	          		dos.flush();
