@@ -1,6 +1,7 @@
 package Client;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
 import java.util.Date;
 
 public class FileTuples implements Serializable {
@@ -23,14 +24,22 @@ public class FileTuples implements Serializable {
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
-	public FileTuples(String name, Date updateDate){
+	public FileTuples(String name,String hash, Date updateDate){
 		setName(name);
 		setUpdateDate(updateDate);
+		setHash(hash);
 	} 
 
+	public String getHash() {
+		return hash;
+	}
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
 	@Override
 	public String toString() {
-		return "FileTuples [name=" + name + ", updateDate=" + updateDate + "]";
+		return "FileTuples [name=" + name + ", hash=" + hash + ", updateDate=" + updateDate + "]";
 	}
+	
 	
 }
