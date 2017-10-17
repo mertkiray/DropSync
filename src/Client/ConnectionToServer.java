@@ -13,7 +13,7 @@ import java.net.Socket;
 
 public class ConnectionToServer
 {
-    public static final String DEFAULT_SERVER_ADDRESS = "172.20.112.68";
+    public static final String DEFAULT_SERVER_ADDRESS = "172.20.120.37";
     public static final int DEFAULT_SERVER_PORT = 8888;
     private Socket s;
     //private BufferedReader br;
