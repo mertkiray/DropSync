@@ -42,11 +42,58 @@ public class ClientMain {
 	        	}else if(message.equalsIgnoreCase("sync check")){
 	        		
 	        		
-	        		ArrayList<FileTuples> fileList = (ArrayList<FileTuples>) connectionToServer.syncCheck("sync check");
+	        		ArrayList<FileTuples> masterFileList = (ArrayList<FileTuples>) connectionToServer.syncCheck("sync check");
+	        		ArrayList<FileTuples> clientFileList = getFilesFromFolder("DropSync1");
+	        		ArrayList<FileTuples> inconsistencies = new ArrayList<>();
+	        		FileTuples temp;
+	        		boolean found = false;
+	        		for(FileTuples m : masterFileList){
+	        			found = false;
+	        			for(FileTuples c : clientFileList){
+	        				if(m.getName().equals(c.getName())){
+	        					found = true;
+	        					if(m.getHash().equals(c.getHash())){
+	        						//consistent
+	        					}else{
+	        						//inconsistent
+	        						if(m.getUpdateDate().compareTo(c.getUpdateDate())>0){
+	        							//master newer
+	        							temp = m;
+	        							temp.setConsistency("Update(f)");
+	        							inconsistencies.add(temp);
+	        						}else{
+	        							//client newer
+	        							temp = c;
+	        							temp.setConsistency("Update(m)");
+	        							inconsistencies.add(temp);
+	        						}
+	        					}
+	        				}	        				
+		        			}	   
+	        			if(!found){
+	        				temp = m;
+							temp.setConsistency("Add(f)");
+							inconsistencies.add(temp);
+	        			}
+	        		}
 	        		
-	        		System.out.println(fileList);
-	        		for(int i = 0; i< fileList.size();i++)
-	        		System.out.println(fileList.get(i).getName());
+	        		for(FileTuples c : clientFileList){
+	        			found = false;
+	        			for(FileTuples m : masterFileList){
+	        				if(c.getName().equals(m.getName())){
+	        					found=true;
+	        				}
+	        			}
+	        			if(!found){
+	        				temp = c;
+							temp.setConsistency("Add(m)");
+							inconsistencies.add(temp);
+	        			}
+	        		}
+	        		System.out.println(inconsistencies);
+//	        		System.out.println(fileList);
+//	        		for(int i = 0; i< fileList.size();i++)
+//	        		System.out.println(fileList.get(i).getName());
 
 	        	}
 	        	
@@ -60,7 +107,7 @@ public class ClientMain {
 	        connectionToServer.Disconnect();
 	    }
 	
-	public ArrayList<FileTuples> getFilesFromFolder(String dir){
+	public static ArrayList<FileTuples> getFilesFromFolder(String dir){
     	File folder = new File("C:\\Users\\MONSTER\\Desktop\\"+dir);
 		File[] listOfFiles = folder.listFiles();
 		ArrayList<FileTuples> fileList = new ArrayList<>();

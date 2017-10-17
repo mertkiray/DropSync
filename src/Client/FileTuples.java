@@ -12,6 +12,7 @@ public class FileTuples implements Serializable {
 	
 	String name, hash;
 	Date updateDate;
+	String consistency;
 	public String getName() {
 		return name;
 	}
@@ -28,8 +29,15 @@ public class FileTuples implements Serializable {
 		setName(name);
 		setUpdateDate(updateDate);
 		setHash(hash);
+		consistency="ok";
 	} 
 
+	public String getConsistency() {
+		return consistency;
+	}
+	public void setConsistency(String consistency) {
+		this.consistency = consistency;
+	}
 	public String getHash() {
 		return hash;
 	}
@@ -38,8 +46,10 @@ public class FileTuples implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "FileTuples [name=" + name + ", hash=" + hash + ", updateDate=" + updateDate + "]";
+		return "FileTuples [name=" + name + ", hash=" + hash + ", updateDate=" + updateDate + ", consistency="
+				+ consistency + "]";
 	}
+	
 	
 	
 }
