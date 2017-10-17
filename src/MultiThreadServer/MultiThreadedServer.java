@@ -160,7 +160,7 @@ public class MultiThreadedServer {
     
     
 	public ArrayList<FileTuples> getFilesFromFolder(String dir){
-    	File folder = new File("C:\\Users\\MONSTER\\Desktop\\"+dir);
+    	File folder = new File("D:\\"+dir);
 		File[] listOfFiles = folder.listFiles();
 		ArrayList<FileTuples> fileList = new ArrayList<>();
 		
