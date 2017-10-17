@@ -72,56 +72,56 @@ public class MultiThreadedServer {
             "Accepted Client Address - " + myClientSocket.getInetAddress().getHostName());
          try { 
       	   Scanner scanner = new Scanner(System.in);
-//            in = new BufferedReader(
-//               new InputStreamReader(myClientSocket.getInputStream()));
-//            out = new PrintWriter(
-//               new OutputStreamWriter(myClientSocket.getOutputStream()));
+            in = new BufferedReader(
+               new InputStreamReader(myClientSocket.getInputStream()));
+            out = new PrintWriter(
+               new OutputStreamWriter(myClientSocket.getOutputStream()));
             
-            dis = new DataInputStream(myClientSocket.getInputStream());
-            fos = new FileOutputStream("testfile.jpg");
-    		byte[] buffer = new byte[4096];
-    		int filesize = 15123; // Send file size in separate msg
-    		int read = 0;
-    		int totalRead = 0;
-    		while((read = dis.read(buffer)) > -1) {
-    			
-    			System.out.println("read " + totalRead + " bytes.");
-    			fos.write(buffer, 0, read);
-    		}
+//            dis = new DataInputStream(myClientSocket.getInputStream());
+//            fos = new FileOutputStream("testfile.jpg");
+//    		byte[] buffer = new byte[4096];
+//    		int filesize = 15123; // Send file size in separate msg
+//    		int read = 0;
+//    		int totalRead = 0;
+//    		while((read = dis.read(buffer)) > -1) {
+//    			
+//    			System.out.println("read " + totalRead + " bytes.");
+//    			fos.write(buffer, 0, read);
+//    		}
     		
             
             
-//            while(m_bRunThread) { 
-//               String clientCommand = in.readLine(); 
-//               System.out.println("Client Says :" + clientCommand);
-//             
-//               if(!ServerOn) { 
-//                  System.out.print("Server has already stopped"); 
-//                  out.println("Server has already stopped"); 
-//                  out.flush(); 
-//                  m_bRunThread = false;
-//                  break;
-//               } 
-//               if(clientCommand.equalsIgnoreCase("quit")) {
-//                  m_bRunThread = false;
-//                  System.out.print("Stopping client thread for client : ");
-//                  break;
-//               } else if(clientCommand.equalsIgnoreCase("end")) {
-//                  m_bRunThread = false;
-//                  System.out.print("Stopping client thread for client : ");
-//                  ServerOn = false;
-//                  break;
-//               } else if(clientCommand.equalsIgnoreCase("send")){
-//            	 String message = scanner.nextLine();
-//            	  out.println(message);
-//            	  out.flush();
-//               }else{
-//            	   String meString = scanner.nextLine();
-//            	   out.println(meString);
-//            	   out.flush();
-//               }
-//             
-//            }
+            while(m_bRunThread) { 
+               String clientCommand = in.readLine(); 
+               System.out.println("Client Says :" + clientCommand);
+             
+               if(!ServerOn) { 
+                  System.out.print("Server has already stopped"); 
+                  out.println("Server has already stopped"); 
+                  out.flush(); 
+                  m_bRunThread = false;
+                  break;
+               } 
+               if(clientCommand.equalsIgnoreCase("quit")) {
+                  m_bRunThread = false;
+                  System.out.print("Stopping client thread for client : ");
+                  break;
+               } else if(clientCommand.equalsIgnoreCase("end")) {
+                  m_bRunThread = false;
+                  System.out.print("Stopping client thread for client : ");
+                  ServerOn = false;
+                  break;
+               } else if(clientCommand.equalsIgnoreCase("send")){
+            	 String message = scanner.nextLine();
+            	  out.println(message);
+            	  out.flush();
+               }else{
+            	   String meString = scanner.nextLine();
+            	   out.println(meString);
+            	   out.flush();
+               }
+             
+            }
          } catch(Exception e) { 
             e.printStackTrace(); 
          } 

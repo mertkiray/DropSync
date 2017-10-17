@@ -15,11 +15,18 @@ public class ClientMain {
 	        Scanner scanner = new Scanner(System.in);
 	        System.out.println("Enter a message for the echo");
 
-	       
-	        	
-	            connectionToServer.sendFile("C:\\Users\\MONSTER\\Desktop\\rr.jpeg");
-	           
+//	        connectionToServer.sendFile("C:\\Users\\MONSTER\\Desktop\\rr.jpeg");
 	        
+	        String message = scanner.nextLine();
+
+	        while (!message.equals("QUIT"))
+	        {
+	        	
+	            System.out.println("Server says " + connectionToServer.SendForAnswer("C:\\Users\\MONSTER\\Desktop\\meme"));
+	            message = scanner.nextLine();
+	        }
+	        
+	        connectionToServer.Disconnect();
 	    }
 
 	}
