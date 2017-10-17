@@ -2,6 +2,8 @@ package Client;
 
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -13,7 +15,7 @@ import java.net.Socket;
 
 public class ConnectionToServer
 {
-    public static final String DEFAULT_SERVER_ADDRESS = "172.20.112.68";
+    public static final String DEFAULT_SERVER_ADDRESS = "172.20.120.37";
     public static final int DEFAULT_SERVER_PORT = 8888;
     private Socket s;
     //private BufferedReader br;
@@ -102,4 +104,18 @@ public class ConnectionToServer
             e.printStackTrace();
         }
     }
+    
+    public void sendFile(String file) throws IOException {
+		DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+		FileInputStream fis = new FileInputStream(file);
+		byte[] buffer = new byte[4096];
+		
+		while (fis.read(buffer) > 0) {
+			dos.write(buffer);
+		}
+		
+		fis.close();
+		dos.close();	
+	}
+    
 }
