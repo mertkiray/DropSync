@@ -7,8 +7,11 @@ import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Yahya Hassanzadeh on 20/09/2017.
@@ -94,6 +97,46 @@ public class ConnectionToServer
 			e.printStackTrace();
 		}
         return response;
+    }
+    
+    
+	@SuppressWarnings("unchecked")
+	public List<FileTuples> syncCheck(String message){
+    	
+    	List<FileTuples> response = null;
+    	
+    	try {
+			dos.writeUTF(message);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			dos.flush();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+			ObjectInputStream objectInputStream = null;
+			try {
+				objectInputStream = new ObjectInputStream(dis);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		
+		
+		   try {
+			
+				response = (List<FileTuples>) objectInputStream.readObject();
+			} catch (IOException | ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	
+    	return response;
+    	
     }
 
 

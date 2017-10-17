@@ -2,17 +2,23 @@ package MultiThreadServer;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
+
+import Client.FileTuples;
  
 public class MultiThreadedServer {
    ServerSocket myServerSocket;
@@ -115,43 +121,16 @@ public class MultiThreadedServer {
                 dos.flush();
 
             	   
-                ///helloo
-                
-                
-            	   /*
+             
+               } else if(clientCommand.equalsIgnoreCase("sync check")){
             	   
             	   
-            	   	    	   
-            	   dis = new DataInputStream(myClientSocket.getInputStream());
-                 fos = new FileOutputStream("testfile.jpg");
-                 
-                 
-         		byte[] buffer = new byte[4096];
-         		int filesize = 15123; // Send file size in separate msg
-         		int read = 0;
-         		int totalRead = 0;
-         		
-         		
-         	
-         		while((read = dis.read(buffer)) > -1) {
-         			
-         			System.out.println("read " + read + " bytes.");
-         			fos.write(buffer, 0, read);
-         		}
-         		
-         		fos.flush();
-         		fos.close();
-         		
-         		out.println("done");
-         		out.flush();
-         		
-         		System.out.println("Hello");
-         		dis.close();
-         		fos.close();
-         		
-         		*/
-         		
-         		
+            	   ObjectOutputStream objectOutputStream = new ObjectOutputStream(dos);
+            	   
+            	   objectOutputStream.writeObject( getFilesFromFolder("DropSync"));
+            	   objectOutputStream.flush();
+            	   objectOutputStream.close();
+            	   
                }
             	   else{
             		   dos.writeUTF(clientCommand);
@@ -175,6 +154,21 @@ public class MultiThreadedServer {
          }
       }
    }
+    
+    
+	public ArrayList<FileTuples> getFilesFromFolder(String dir){
+    	File folder = new File("C:\\Users\\Mert\\Desktop\\"+dir);
+		File[] listOfFiles = folder.listFiles();
+		ArrayList<FileTuples> fileList = new ArrayList<>();
+		
+			for(int i = 0; i< listOfFiles.length;i++){
+				FileTuples tuple = new FileTuples(listOfFiles[i].getName(),new Date(listOfFiles[i].lastModified()));
+				fileList.add(tuple);
+				}
+			
+
+		return fileList;
+    }
    
 }
 
