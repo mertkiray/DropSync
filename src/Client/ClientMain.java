@@ -108,7 +108,7 @@ public class ClientMain {
 	    }
 	
 	public static ArrayList<FileTuples> getFilesFromFolder(String dir){
-    	File folder = new File("C:\\Users\\Mert\\Desktop\\"+dir);
+    	File folder = new File("C:\\Users\\MONSTER\\Desktop\\"+dir);
 		File[] listOfFiles = folder.listFiles();
 		ArrayList<FileTuples> fileList = new ArrayList<>();
 		
