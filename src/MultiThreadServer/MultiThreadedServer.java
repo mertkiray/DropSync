@@ -132,7 +132,6 @@ public class MultiThreadedServer {
             	   
             	   objectOutputStream.writeObject( getFilesFromFolder("DropSync"));
             	   objectOutputStream.flush();
-            	   objectOutputStream.close();
             	   
                }
             	   else{
@@ -160,7 +159,10 @@ public class MultiThreadedServer {
     
     
 	public ArrayList<FileTuples> getFilesFromFolder(String dir){
+<<<<<<< HEAD
     	File folder = new File("D:\\"+dir);
+=======
+    
 		File[] listOfFiles = folder.listFiles();
 		ArrayList<FileTuples> fileList = new ArrayList<>();
 		
