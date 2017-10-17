@@ -16,7 +16,7 @@ import java.net.Socket;
 
 public class ConnectionToDataServer
 {
-    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.24";
+    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.23";
     public static final int DEFAULT_SERVER_PORT = 8889;
     private Socket s;
     //private BufferedReader br;
