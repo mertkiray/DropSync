@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ConnectionToServer
 {
-    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.23";
+    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.24";
     public static final int DEFAULT_SERVER_PORT = 8888;
     private Socket s;
     //private BufferedReader br;
@@ -125,15 +125,7 @@ public class ConnectionToServer
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		
-			try {
-				dos.close();
-				dis.close();
-
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			
 		
 		   try {
 			

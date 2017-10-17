@@ -133,6 +133,7 @@ public class MultiThreadedServer {
             	   objectOutputStream.writeObject( getFilesFromFolder("DropSync"));
             	   objectOutputStream.flush();
             	   
+           	   
                }
             	   else{
             		   dos.writeUTF(clientCommand);
