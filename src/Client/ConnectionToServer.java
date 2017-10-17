@@ -2,7 +2,6 @@ package Client;
 
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,12 +15,12 @@ import java.net.Socket;
 
 public class ConnectionToServer
 {
-    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.24";
+    public static final String DEFAULT_SERVER_ADDRESS = "172.20.120.37";
     public static final int DEFAULT_SERVER_PORT = 8888;
     private Socket s;
     //private BufferedReader br;
-    protected DataInputStream dis = null;
-	protected DataOutputStream dos = null;
+    protected BufferedReader is;
+    protected PrintWriter os;
 
     protected String serverAddress;
     protected int serverPort;
@@ -49,8 +48,8 @@ public class ConnectionToServer
             /*
             Read and write buffers on the socket
              */
-            dis = new DataInputStream(s.getInputStream());
-            dos = new DataOutputStream(s.getOutputStream());
+            is = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            os = new PrintWriter(s.getOutputStream());
 
             System.out.println("Successfully connected to " + serverAddress + " on port " + serverPort);
         }
@@ -72,23 +71,13 @@ public class ConnectionToServer
         /*
 		Sends the message to the server via PrintWriter
 		 */
-		try {
-			dos.writeUTF(message);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			dos.flush();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		os.println(message);
+		os.flush();
 		/*
 		Reads a line from the server via Buffer Reader
 		 */
            try {
-			response = dis.readUTF();
+			response = is.readLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -104,8 +93,8 @@ public class ConnectionToServer
     {
         try
         {
-            dis.close();
-            dos.close();
+            is.close();
+            os.close();
             //br.close();
             s.close();
             System.out.println("ConnectionToServer. SendForAnswer. Connection Closed");
@@ -116,34 +105,17 @@ public class ConnectionToServer
         }
     }
     
-    public String sendFile(String file) throws IOException {
-        String response = new String();
-
-    	dos.writeUTF("sendFile");
-    
+    public void sendFile(String file) throws IOException {
 		DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 		FileInputStream fis = new FileInputStream(file);
-		
 		byte[] buffer = new byte[4096];
 		
-		while (fis.read(buffer) > -1) {
+		while (fis.read(buffer) > 0) {
 			dos.write(buffer);
 		}
 		
-    	dos.flush();
-		dos.flush();
-		dos.close();
 		fis.close();
-		
-		 try {
-				response = dis.readUTF();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
-		
-			return response;
+		dos.close();	
 	}
     
 }
