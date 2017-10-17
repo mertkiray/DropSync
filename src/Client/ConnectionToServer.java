@@ -13,7 +13,7 @@ import java.net.Socket;
 
 public class ConnectionToServer
 {
-    public static final String DEFAULT_SERVER_ADDRESS = "172.20.120.37";
+    public static final String DEFAULT_SERVER_ADDRESS = "172.20.112.68";
     public static final int DEFAULT_SERVER_PORT = 8888;
     private Socket s;
     //private BufferedReader br;
@@ -66,23 +66,20 @@ public class ConnectionToServer
     public String SendForAnswer(String message)
     {
         String response = new String();
-        try
-        {
-            /*
-            Sends the message to the server via PrintWriter
-             */
-            os.println(message);
-            os.flush();
-            /*
-            Reads a line from the server via Buffer Reader
-             */
-            response = is.readLine();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-            System.out.println("ConnectionToServer. SendForAnswer. Socket read Error");
-        }
+        /*
+		Sends the message to the server via PrintWriter
+		 */
+		os.println(message);
+		os.flush();
+		/*
+		Reads a line from the server via Buffer Reader
+		 */
+           try {
+			response = is.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return response;
     }
 

@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Scanner;
  
 public class MultiThreadedServer {
    ServerSocket myServerSocket;
@@ -66,33 +67,43 @@ public class MultiThreadedServer {
          System.out.println(
             "Accepted Client Address - " + myClientSocket.getInetAddress().getHostName());
          try { 
+      	   Scanner scanner = new Scanner(System.in);
             in = new BufferedReader(
                new InputStreamReader(myClientSocket.getInputStream()));
             out = new PrintWriter(
                new OutputStreamWriter(myClientSocket.getOutputStream()));
-            
+           
             while(m_bRunThread) { 
                String clientCommand = in.readLine(); 
                System.out.println("Client Says :" + clientCommand);
-               
+             
                if(!ServerOn) { 
                   System.out.print("Server has already stopped"); 
                   out.println("Server has already stopped"); 
                   out.flush(); 
                   m_bRunThread = false;
+                  break;
                } 
                if(clientCommand.equalsIgnoreCase("quit")) {
                   m_bRunThread = false;
                   System.out.print("Stopping client thread for client : ");
+                  break;
                } else if(clientCommand.equalsIgnoreCase("end")) {
                   m_bRunThread = false;
                   System.out.print("Stopping client thread for client : ");
                   ServerOn = false;
-               } else {
-                  out.println("Server Says : " + clientCommand);
-                  out.flush(); 
-               } 
-            } 
+                  break;
+               } else if(clientCommand.equalsIgnoreCase("send")){
+            	 String message = scanner.nextLine();
+            	  out.println(message);
+            	  out.flush();
+               }else{
+            	   String meString = scanner.nextLine();
+            	   out.println(meString);
+            	   out.flush();
+               }
+             
+            }
          } catch(Exception e) { 
             e.printStackTrace(); 
          } 
@@ -105,7 +116,9 @@ public class MultiThreadedServer {
             } catch(IOException ioe) { 
                ioe.printStackTrace(); 
             } 
-         } 
-      } 
-   } 
+         }
+      }
+   }
 }
+      
+   
