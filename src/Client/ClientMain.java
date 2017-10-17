@@ -15,15 +15,32 @@ public class ClientMain {
 	        Scanner scanner = new Scanner(System.in);
 	        System.out.println("Enter a message for the echo");
 
-//	        connectionToServer.sendFile("C:\\Users\\MONSTER\\Desktop\\rr.jpeg");
 	        
 	        String message = scanner.nextLine();
 
 	        while (!message.equals("QUIT"))
 	        {
 	        	
-	            System.out.println("Server says " + connectionToServer.SendForAnswer("C:\\Users\\MONSTER\\Desktop\\meme"));
+	        	if(message.equals("sendFile")){
+	        		
+	        		connectionToServer.SendForAnswer("sendFile");
+	        	
+	        	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
+	        	
+	        	connectionToDataServer.Connect();
+	        		
+		        System.out.println(connectionToDataServer.sendFile("C:\\Users\\Mert\\Desktop\\asd.jpg"));
+		        
+		        
+		    //    connectionToDataServer.Disconnect();
+		        
+		        
+		        
+	        	}else{
+	            System.out.println("Server says " + connectionToServer.SendForAnswer(message));
+	        	}
 	            message = scanner.nextLine();
+
 	        }
 	        
 	        connectionToServer.Disconnect();
