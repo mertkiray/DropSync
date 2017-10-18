@@ -34,7 +34,7 @@ public class ClientMain {
 	        	
 	        	connectionToDataServer.Connect();
 	        		
-		        System.out.println(connectionToDataServer.sendFile("C:\\Users\\MONSTER\\Desktop\\asd.jpg"));
+		        System.out.println(connectionToDataServer.sendFile("C:\\Users\\Mert\\Desktop\\asd.jpg"));
 		        
 		        
 		    //    connectionToDataServer.Disconnect();

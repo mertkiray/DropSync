@@ -2,6 +2,8 @@ package MultiThreadServer;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,11 +14,18 @@ import java.util.Calendar;
 
 public class MultiThreadedDataServer extends Thread{
 ServerSocket myServerSocket;
+boolean sendToClient = false;
+String fileToClient = null;
 
 boolean ServerOn = true;
 public MultiThreadedDataServer() { 
 	
   
+}
+
+public MultiThreadedDataServer(boolean sendToClient,String file){
+	this.sendToClient = sendToClient;
+	fileToClient = file;
 }
 
 public void run(){
@@ -39,7 +48,13 @@ public void run(){
 	      try { 
 	         Socket clientSocket = myServerSocket.accept();
 	         ServerOn = false;
-	         ClientServiceDataThread cliThread = new ClientServiceDataThread(clientSocket);
+	         ClientServiceDataThread cliThread;
+	         if(sendToClient){
+	          cliThread = new ClientServiceDataThread(clientSocket);
+	         }
+	         else{
+	         cliThread = new ClientServiceDataThread(clientSocket,sendToClient,fileToClient);
+	         }
 	         cliThread.start(); 
 	      } catch(IOException ioe) { 
 	         System.out.println("Exception found on accept. Ignoring. Stack Trace :"); 
@@ -62,6 +77,9 @@ public void run(){
 class ClientServiceDataThread extends Thread{
 	   Socket myClientSocket;
 	   boolean m_bRunThread = true; 
+	   boolean sendToClient = false;
+	   String fileToClient;
+	   
 	
 	      
 	      public ClientServiceDataThread() { 
@@ -72,6 +90,12 @@ class ClientServiceDataThread extends Thread{
 	          myClientSocket = s; 
 	       } 
 	      
+	      ClientServiceDataThread(Socket s, boolean sendToClient,String fileToClient){
+	    	  myClientSocket = s;
+	    	  this.sendToClient = sendToClient;
+	    	  this.fileToClient = fileToClient;
+	      }
+	      
 	      
 	      
 	      public void run() { 
@@ -79,6 +103,8 @@ class ClientServiceDataThread extends Thread{
 	    	   FileOutputStream fos = null;
 	    	   DataInputStream dis = null;
 	    	   DataOutputStream dos = null;
+	    	    FileInputStream fis = null;
+
 	     
 	          
 	          try { 
@@ -93,7 +119,7 @@ class ClientServiceDataThread extends Thread{
 	        	  dis = new DataInputStream(myClientSocket.getInputStream());
                fos = new FileOutputStream("testfile.jpg");
                
-	            
+	            if(!sendToClient){
 	          		byte[] buffer = new byte[4096];
 	          		int filesize = 15123; // Send file size in separate msg
 	          		int read = 0;
@@ -106,6 +132,14 @@ class ClientServiceDataThread extends Thread{
 	          			fos.write(buffer, 0, read);
 	          		}
 	          		
+	            } else{
+	            	
+	            	
+	          	  fis = new FileInputStream(fileToClient);
+	          	  
+	          	  
+	            	
+	            }
 	          		//helloo
 	          		/*
 	          		dos.writeUTF("hello");
@@ -113,6 +147,7 @@ class ClientServiceDataThread extends Thread{
 	          		*/
 	          		
 	                myServerSocket.close();
+	            
 
 	          	
 	             } catch(Exception e) { 

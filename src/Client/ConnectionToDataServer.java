@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -16,12 +17,13 @@ import java.net.Socket;
 
 public class ConnectionToDataServer
 {
-    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.27";
+    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.24";
     public static final int DEFAULT_SERVER_PORT = 8889;
     private Socket s;
     //private BufferedReader br;
     private DataOutputStream dos;
     private FileInputStream fis;
+	private FileOutputStream fos;
     private DataInputStream dataInputStream;
     //asdasdas
     
@@ -53,7 +55,8 @@ public class ConnectionToDataServer
              */
             dataInputStream = new DataInputStream(s.getInputStream());
             dos = new DataOutputStream(s.getOutputStream());
-          
+            fos = new FileOutputStream("testfile.jpg");
+
    		 
             System.out.println("Successfully connected to " + serverAddress + " on port " + serverPort);
         }
@@ -111,5 +114,14 @@ public class ConnectionToDataServer
 			
 			return response;
 	}
+    
+    public String getFile(){
+    	 String response = new String();
+    	 
+    	 
+    	 
+    	 return response;
+    	
+    }
     
 }
