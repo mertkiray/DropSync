@@ -18,7 +18,7 @@ import java.net.Socket;
 
 public class ConnectionToDataServer
 {
-    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.27";
+    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.24";
     public static final int DEFAULT_SERVER_PORT = 8889;
     final String MASTERPATH = Constants.Constants.MASTERPATH;
 	final String FOLLOWERPATH = Constants.Constants.FOLLOWERPATH;
@@ -56,6 +56,7 @@ public class ConnectionToDataServer
             /*
             Read and write buffers on the socket
              */
+      
             dataInputStream = new DataInputStream(s.getInputStream());
             dos = new DataOutputStream(s.getOutputStream());
             
@@ -76,8 +77,9 @@ public class ConnectionToDataServer
     public void Disconnect()
     {
         try
-        {
+        {    
             dos.close();
+            dataInputStream.close();
             //br.close();
             s.close();
             System.out.println("ConnectionToServer. SendForAnswer. Connection Closed");
@@ -104,6 +106,8 @@ public class ConnectionToDataServer
 		}
         
 		dos.flush();
+		fis.close();
+		
 		/*
 		  try {
 				response = dataInputStream.readUTF();
@@ -141,10 +145,16 @@ public class ConnectionToDataServer
 				System.out.println("read " + read + " bytes.");
 				fos.write(buffer, 0, read);
 			}
+			
+			fos.close();
+	
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+   		
+ 
    		
 		Disconnect();
 

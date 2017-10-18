@@ -140,7 +140,7 @@ public class ClientMain {
 	    }
 	
 	public static ArrayList<FileTuples> getFilesFromFolder(String dir){
-    	File folder = new File("D:\\"+dir);
+    	File folder = new File(FOLLOWERPATH);
 		File[] listOfFiles = folder.listFiles();
 		ArrayList<FileTuples> fileList = new ArrayList<>();
 		

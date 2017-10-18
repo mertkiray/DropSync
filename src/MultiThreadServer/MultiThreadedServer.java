@@ -197,7 +197,7 @@ public class MultiThreadedServer {
     
 	public ArrayList<FileTuples> getFilesFromFolder(String dir){
 
-    	File folder = new File("D:\\"+dir);
+    	File folder = new File(MASTERPATH);
 
 		File[] listOfFiles = folder.listFiles();
 		ArrayList<FileTuples> fileList = new ArrayList<>();

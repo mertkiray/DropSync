@@ -144,6 +144,8 @@ class ClientServiceDataThread implements Runnable{
 	          			fos.write(buffer, 0, read);
 	          		}
 	          		
+	          		fos.close();
+	          		
 	            } else{
 	            
 	            	System.out.println("SEND ASD");
@@ -154,9 +156,12 @@ class ClientServiceDataThread implements Runnable{
 	          	  
 	          	byte[] buffer = new byte[4096];
 	    		
-	    		while (fis.read(buffer) > -1) {
+	    		while (fis.read(buffer,0,buffer.length) > -1) {
 	    			dos.write(buffer);
 	    		}
+	    		
+	    		dos.flush();
+	    		fis.close();
 	    			            	
 	            	System.out.println("Finished Sending");
 	            }
@@ -165,23 +170,19 @@ class ClientServiceDataThread implements Runnable{
 	          		dos.writeUTF("hello");
 	          		dos.flush();
 	          		*/
-	          		
-	                myServerSocket.close();
-	           
+	          			           
 	             } catch(Exception e) { 
 	             e.printStackTrace(); 
 	          } 
 	          finally { 
-	             try { 
-	            
-	            		dis.close();
-		          		fos.close();
-		          		dos.close();
-	                myClientSocket.close(); 
-	                System.out.println("...Stopped"); 
-	             } catch(IOException ioe) { 
-	                ioe.printStackTrace(); 
-	             } 
+	             try{
+					dis.close();
+					dos.close();
+				myClientSocket.close(); 
+				 }catch(Exception e){
+					 e.printStackTrace();
+				 }
+				System.out.println("...Stopped"); 
 	          }
 	       }
 	 		   
