@@ -133,16 +133,24 @@ public class MultiThreadedServer {
             	   
                }else if(clientCommand.equalsIgnoreCase("sendFile")){
             	   
-            	   
-            	   
-                new MultiThreadedDataServer().start();       
+            	   MultiThreadedDataServer dataServer = new MultiThreadedDataServer();
+            			   dataServer.start();       
                 
                 dos.writeUTF("started");
                 dos.flush();
-
+                
+               }else if(clientCommand.equalsIgnoreCase("getFile")){
             	   
-             
-               }else if(clientCommand.equalsIgnoreCase("uploadFile")){
+            	   MultiThreadedDataServer dataServer = new MultiThreadedDataServer(true,"C:\\Users\\Mert\\Desktop\\asd.jpg");
+            			   
+            			   dataServer.start();
+            	   
+            	   dos.writeUTF("started");
+            	   dos.flush();
+            	   
+               }
+               
+               else if(clientCommand.equalsIgnoreCase("uploadFile")){
             	   dropBoxFileManagement.uploadFile("plan.txt", PATH+"plan.txt");
                }
                else if(clientCommand.equalsIgnoreCase("sync check")){

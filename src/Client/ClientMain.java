@@ -40,7 +40,20 @@ public class ClientMain {
 		        
 		    //    connectionToDataServer.Disconnect();
 		   
-	        	}else if(message.equalsIgnoreCase("sync check")){
+	        	}else if(message.equals("getFile")){
+	        			        
+	        		connectionToServer.SendForAnswer("sendFile");
+
+		        	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
+
+		        	connectionToDataServer.Connect();
+
+			        System.out.println(connectionToDataServer.getFile());
+
+	        		
+	        	}
+	        	
+	        	else if(message.equalsIgnoreCase("sync check")){
 	        		
 	        		
 	        		ArrayList<FileTuples> masterFileList = (ArrayList<FileTuples>) connectionToServer.syncCheck("sync check");

@@ -14,22 +14,24 @@ import java.util.Calendar;
 
 public class MultiThreadedDataServer extends Thread{
 ServerSocket myServerSocket;
-boolean sendToClient = false;
+private boolean sendToClient = true;
 String fileToClient = null;
-
 boolean ServerOn = true;
+
+
 public MultiThreadedDataServer() { 
-	
-  
+	System.out.println("Mult");
 }
 
+
 public MultiThreadedDataServer(boolean sendToClient,String file){
+	System.out.println("Hello");
 	this.sendToClient = sendToClient;
 	fileToClient = file;
+
 }
 
 public void run(){
-
 	 try {
 	      myServerSocket = new ServerSocket(8889);
 	      
@@ -38,6 +40,7 @@ public void run(){
 	      System.exit(-1);
 	   } 
 	   
+	 System.out.println("SEND OR GET"+sendToClient+"");
 			
 	   Calendar now = Calendar.getInstance();
 	   SimpleDateFormat formatter = new SimpleDateFormat(
@@ -49,7 +52,7 @@ public void run(){
 	         Socket clientSocket = myServerSocket.accept();
 	         ServerOn = false;
 	         ClientServiceDataThread cliThread;
-	         if(sendToClient){
+	         if(!sendToClient){
 	          cliThread = new ClientServiceDataThread(clientSocket);
 	         }
 	         else{
@@ -77,7 +80,7 @@ public void run(){
 class ClientServiceDataThread extends Thread{
 	   Socket myClientSocket;
 	   boolean m_bRunThread = true; 
-	   boolean sendToClient = false;
+	 private  boolean sendToClient = false;
 	   String fileToClient;
 	   
 	
@@ -109,17 +112,15 @@ class ClientServiceDataThread extends Thread{
 	          
 	          try { 
 	        	  
-	        
-	        	  System.out.println(
-	     	             "Accepted Client Address - " + myClientSocket.getInetAddress().getHostName());
-	        	  
-	        	  
-	        	  
+	    
 	        	  dos = new DataOutputStream(myClientSocket.getOutputStream());
 	        	  dis = new DataInputStream(myClientSocket.getInputStream());
                fos = new FileOutputStream("testfile.jpg");
                
 	            if(!sendToClient){
+	            	
+	            	System.out.println("SEND SEND");
+	            	
 	          		byte[] buffer = new byte[4096];
 	          		int filesize = 15123; // Send file size in separate msg
 	          		int read = 0;
@@ -133,12 +134,20 @@ class ClientServiceDataThread extends Thread{
 	          		}
 	          		
 	            } else{
-	            	
-	            	
+	            
+	            	System.out.println("SEND ASD");
+
+	            	System.out.println("Started Sending");
+
 	          	  fis = new FileInputStream(fileToClient);
 	          	  
-	          	  
-	            	
+	          	byte[] buffer = new byte[4096];
+	    		
+	    		while (fis.read(buffer) > -1) {
+	    			dos.write(buffer);
+	    		}
+	    			            	
+	            	System.out.println("Finished Sending");
 	            }
 	          		//helloo
 	          		/*
@@ -147,9 +156,7 @@ class ClientServiceDataThread extends Thread{
 	          		*/
 	          		
 	                myServerSocket.close();
-	            
-
-	          	
+	           
 	             } catch(Exception e) { 
 	             e.printStackTrace(); 
 	          } 

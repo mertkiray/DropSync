@@ -90,7 +90,7 @@ public class ConnectionToDataServer
     public String sendFile(String file) throws IOException {
         String response = new String();
 
-    	
+
        
     	  fis = new FileInputStream(file);
 		
@@ -100,6 +100,7 @@ public class ConnectionToDataServer
 			dos.write(buffer);
 		}
         
+		dos.flush();
 		/*
 		  try {
 				response = dataInputStream.readUTF();
@@ -118,8 +119,28 @@ public class ConnectionToDataServer
     public String getFile(){
     	 String response = new String();
     	 
+     	System.out.println("Started Getting");
+
     	 
-    	 
+    	byte[] buffer = new byte[4096];
+   		int filesize = 15123; // Send file size in separate msg
+   		int read = 0;
+   		int totalRead = 0;
+   		
+   	
+   		try {
+			while((read = dataInputStream.read(buffer)) > -1) {
+				System.out.println("read " + read + " bytes.");
+				fos.write(buffer, 0, read);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+   		
+		Disconnect();
+
+   		    	 
     	 return response;
     	
     }
