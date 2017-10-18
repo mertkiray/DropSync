@@ -21,11 +21,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
 
+import com.dropbox.core.v2.files.Metadata;
+
 import Client.FileTuples;
  
 public class MultiThreadedServer {
    ServerSocket myServerSocket;
-   
+   private String PATH = "D:\\DropSync\\";
    boolean ServerOn = true;
    public MultiThreadedServer() { 
       try {
@@ -80,6 +82,7 @@ public class MultiThreadedServer {
       public void run() { 
     	  DataInputStream dis = null;
    	   DataOutputStream dos = null;
+   	   DropBoxFileManagement dropBoxFileManagement = new DropBoxFileManagement();
    	   System.out.println(
             "Accepted Client Address - " + myClientSocket.getInetAddress().getHostName());
          try { 
@@ -114,6 +117,20 @@ public class MultiThreadedServer {
             	   dos.flush();
             	   scanner.close();
             
+               }else if(clientCommand.equalsIgnoreCase("dropbox sync")){
+            	   ArrayList<Metadata> alreadyUploadedFiles = dropBoxFileManagement.getAlreadyUploadedFiles();
+            	   ArrayList<FileTuples> filesInFolder = getFilesFromFolder("DropSync");
+            	   System.out.println(alreadyUploadedFiles);
+            	   for(FileTuples x : filesInFolder){
+            		   System.out.println(x);
+            	   }
+//            	   dropBoxFileManagement.uploadFile("meme.jpg", PATH+"meme.jpg");
+            	   
+            	   
+            	   
+            	   
+            	              	   
+            	   
                }else if(clientCommand.equalsIgnoreCase("sendFile")){
             	   
             	   
@@ -125,7 +142,10 @@ public class MultiThreadedServer {
 
             	   
              
-               } else if(clientCommand.equalsIgnoreCase("sync check")){
+               }else if(clientCommand.equalsIgnoreCase("uploadFile")){
+            	   dropBoxFileManagement.uploadFile("plan.txt", PATH+"plan.txt");
+               }
+               else if(clientCommand.equalsIgnoreCase("sync check")){
             	   
             	   
             	   ObjectOutputStream objectOutputStream = new ObjectOutputStream(dos);
@@ -171,7 +191,7 @@ public class MultiThreadedServer {
 				//Use MD5 algorithm
 				MessageDigest md5Digest = null;
 				try {
-					md5Digest = MessageDigest.getInstance("MD5");
+					md5Digest = MessageDigest.getInstance("SHA-256");
 				} catch (NoSuchAlgorithmException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -180,7 +200,6 @@ public class MultiThreadedServer {
 				//Get the checksum
 				String checksum = null;
 				try {
-					System.out.println("girdi");
 					checksum = getFileChecksum(md5Digest, listOfFiles[i]);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
