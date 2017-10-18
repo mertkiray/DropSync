@@ -27,7 +27,8 @@ import Client.FileTuples;
  
 public class MultiThreadedServer {
    ServerSocket myServerSocket;
-   private String PATH = "D:\\DropSync\\";
+   final String MASTERPATH = Constants.Constants.MASTERPATH;
+   final String FOLLOWERPATH = Constants.Constants.FOLLOWERPATH;
    boolean ServerOn = true;
    public MultiThreadedServer() { 
       try {
@@ -131,19 +132,22 @@ public class MultiThreadedServer {
             	   
             	              	   
             	   
-               }else if(clientCommand.equalsIgnoreCase("sendFile")){
+               }else if(clientCommand.contains("sendFile")){
             	   System.out.println("SEND FÝLE IS HERE");
+            	   String[] messageParsed = clientCommand.split(" ");
+	        		String fileName = messageParsed[1];
 
-            	   MultiThreadedDataServer dataServer = new MultiThreadedDataServer();
+            	   MultiThreadedDataServer dataServer = new MultiThreadedDataServer(fileName);
             	   Thread t = new Thread(dataServer);
             	   t.start();       
                 
                 dos.writeUTF("started");
                 dos.flush();
                 
-               }else if(clientCommand.equalsIgnoreCase("getFile")){
-            	   
-            	   MultiThreadedDataServer dataServer = new MultiThreadedDataServer(true,"C:\\Users\\Mert\\Desktop\\aaa.jpg");
+               }else if(clientCommand.contains("getFile")){
+            	   String[] messageParsed = clientCommand.split(" ");
+	        		String fileName = messageParsed[1];
+            	   MultiThreadedDataServer dataServer = new MultiThreadedDataServer(true,MASTERPATH+fileName);
            	   
             		Thread t = new Thread(dataServer);
             		t.start();
@@ -155,7 +159,7 @@ public class MultiThreadedServer {
                }
                
                else if(clientCommand.equalsIgnoreCase("uploadFile")){
-            	   dropBoxFileManagement.uploadFile("plan.txt", PATH+"plan.txt");
+//            	   dropBoxFileManagement.uploadFile("plan.txt", PATH+"plan.txt");
                }
                else if(clientCommand.equalsIgnoreCase("sync check")){
             	   

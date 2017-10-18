@@ -17,10 +17,16 @@ ServerSocket myServerSocket;
 private boolean sendToClient = false;
 String fileToClient = null;
 boolean ServerOn = true;
-
+final String MASTERPATH = Constants.Constants.MASTERPATH;
+final String FOLLOWERPATH = Constants.Constants.FOLLOWERPATH;
+private String fileName;
 
 public MultiThreadedDataServer() { 
 	System.out.println("Mult");
+}
+public MultiThreadedDataServer(String fileName) { 
+	this.fileName=fileName;
+	
 }
 
 
@@ -53,7 +59,7 @@ public void run(){
 	         ServerOn = false;
 	         ClientServiceDataThread cliThread;
 	         if(!sendToClient){
-	          cliThread = new ClientServiceDataThread(clientSocket);
+	          cliThread = new ClientServiceDataThread(clientSocket, fileName);
 	          Thread t = new Thread(cliThread);
 	          t.start();
 	         }
@@ -85,6 +91,7 @@ class ClientServiceDataThread implements Runnable{
 	   boolean m_bRunThread = true; 
 	 private  boolean sendToClient = false;
 	   String fileToClient;
+	   private String fileName;
 	   
 	
 	      
@@ -92,8 +99,9 @@ class ClientServiceDataThread implements Runnable{
 	         super(); 
 	      } 
 	      
-	      ClientServiceDataThread(Socket s) { 
+	      ClientServiceDataThread(Socket s, String fileName) { 
 	          myClientSocket = s; 
+	          this.fileName = fileName;
 	       } 
 	      
 	      ClientServiceDataThread(Socket s, boolean sendToClient,String fileToClient){
@@ -118,7 +126,7 @@ class ClientServiceDataThread implements Runnable{
 	    
 	        	  dos = new DataOutputStream(myClientSocket.getOutputStream());
 	        	  dis = new DataInputStream(myClientSocket.getInputStream());
-               fos = new FileOutputStream("testfile.jpg");
+               fos = new FileOutputStream(MASTERPATH+fileName);
                
 	            if(!sendToClient){
 	            	

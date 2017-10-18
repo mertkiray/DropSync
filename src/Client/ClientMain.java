@@ -12,7 +12,8 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class ClientMain {
-	
+	final static String MASTERPATH = Constants.Constants.MASTERPATH;
+	final static String FOLLOWERPATH = Constants.Constants.FOLLOWERPATH;
 	//helloo
 
 	public static void main(String[] args) throws IOException {
@@ -27,28 +28,32 @@ public class ClientMain {
 	        while (!message.equals("QUIT"))
 	        {
 	        	
-	        	if(message.equals("sendFile")){
+	        	if(message.contains("sendFile")){
 	        		
-	        		connectionToServer.SendForAnswer("sendFile");
-	        	
-	        	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
-	        	
-	        	connectionToDataServer.Connect();
+	        		String[] messageParsed = message.split(" ");
+	        		String fileName = messageParsed[1];
 	        		
-		        System.out.println(connectionToDataServer.sendFile("C:\\Users\\Mert\\Desktop\\asd.jpg"));
+		        	connectionToServer.SendForAnswer("sendFile "+fileName);
+		        	
+		        	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
+		        	
+		        	connectionToDataServer.Connect();
+		        		
+			        System.out.println(connectionToDataServer.sendFile(FOLLOWERPATH+fileName));
 		        
 		        
 		    //    connectionToDataServer.Disconnect();
 		   
-	        	}else if(message.equals("getFile")){
-	        			        
-	        		connectionToServer.SendForAnswer("getFile");
+	        	}else if(message.contains("getFile")){
+	        		String[] messageParsed = message.split(" ");
+	        		String fileName = messageParsed[1];
+	        		connectionToServer.SendForAnswer("getFile "+fileName);
 
 		        	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
 
 		        	connectionToDataServer.Connect();
 
-			        System.out.println(connectionToDataServer.getFile());
+			        System.out.println(connectionToDataServer.getFile(FOLLOWERPATH+fileName));
 
 	        		
 	        	}

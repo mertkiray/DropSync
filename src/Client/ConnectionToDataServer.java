@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,8 +18,10 @@ import java.net.Socket;
 
 public class ConnectionToDataServer
 {
-    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.24";
+    public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.27";
     public static final int DEFAULT_SERVER_PORT = 8889;
+    final String MASTERPATH = Constants.Constants.MASTERPATH;
+	final String FOLLOWERPATH = Constants.Constants.FOLLOWERPATH;
     private Socket s;
     //private BufferedReader br;
     private DataOutputStream dos;
@@ -55,7 +58,7 @@ public class ConnectionToDataServer
              */
             dataInputStream = new DataInputStream(s.getInputStream());
             dos = new DataOutputStream(s.getOutputStream());
-            fos = new FileOutputStream("testfile.jpg");
+            
 
    		 
             System.out.println("Successfully connected to " + serverAddress + " on port " + serverPort);
@@ -116,11 +119,16 @@ public class ConnectionToDataServer
 			return response;
 	}
     
-    public String getFile(){
+    public String getFile(String file){
     	 String response = new String();
     	 
      	System.out.println("Started Getting");
-
+     	try {
+			fos = new FileOutputStream(file);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     	 
     	byte[] buffer = new byte[4096];
    		int filesize = 15123; // Send file size in separate msg
