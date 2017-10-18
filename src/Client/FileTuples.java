@@ -2,6 +2,7 @@ package Client;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 public class FileTuples implements Serializable {
@@ -13,6 +14,8 @@ public class FileTuples implements Serializable {
 	String name, hash;
 	Date updateDate;
 	String consistency;
+	double size;
+	double sizeInMB;
 	public String getName() {
 		return name;
 	}
@@ -30,8 +33,16 @@ public class FileTuples implements Serializable {
 		setUpdateDate(updateDate);
 		setHash(hash);
 		consistency="ok";
+		size=0;
 	} 
-
+	
+	public double getSize() {
+		return size;
+	}
+	public void setSize(double size) {
+		this.size = size;
+		sizeInMB=size/1048576;
+	}
 	public String getConsistency() {
 		return consistency;
 	}
@@ -46,9 +57,9 @@ public class FileTuples implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "FileTuples [name=" + name + ", hash=" + hash + ", updateDate=" + updateDate + ", consistency="
-				+ consistency + "]";
+		return name +" "+ consistency+" " + new DecimalFormat("#.##").format(sizeInMB)+" MB";
 	}
+	
 	
 	
 	
