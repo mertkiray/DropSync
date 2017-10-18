@@ -126,10 +126,10 @@ class ClientServiceDataThread implements Runnable{
 	    
 	        	  dos = new DataOutputStream(myClientSocket.getOutputStream());
 	        	  dis = new DataInputStream(myClientSocket.getInputStream());
-               fos = new FileOutputStream(MASTERPATH+fileName);
                
 	            if(!sendToClient){
 	            	
+	                fos = new FileOutputStream(MASTERPATH+fileName);
 	            	System.out.println("SEND SEND");
 	            	
 	          		byte[] buffer = new byte[4096];
