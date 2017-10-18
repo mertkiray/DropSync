@@ -191,7 +191,7 @@ public class MultiThreadedServer {
 				//Use MD5 algorithm
 				MessageDigest md5Digest = null;
 				try {
-					md5Digest = MessageDigest.getInstance("SHA-256");
+					md5Digest = MessageDigest.getInstance("MD5");
 				} catch (NoSuchAlgorithmException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -206,6 +206,7 @@ public class MultiThreadedServer {
 					e.printStackTrace();
 				}
 				FileTuples tuple = new FileTuples(listOfFiles[i].getName(),checksum,new Date(listOfFiles[i].lastModified()));
+				tuple.setSize(listOfFiles[i].length());
 				fileList.add(tuple);
 				}
 			

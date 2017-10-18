@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -90,11 +91,19 @@ public class ClientMain {
 							inconsistencies.add(temp);
 	        			}
 	        		}
-	        		System.out.println(inconsistencies);
+	        		double totalSize=0;
+	        		for(FileTuples tuple : inconsistencies){
+	        			System.out.println(tuple);
+	        			totalSize+=tuple.getSize();
+	        		}
+	        		
+	        		System.out.println("The total size of the updates is "+new DecimalFormat("#.##").format(totalSize/1048576)+" MB");
 //	        		System.out.println(fileList);
 //	        		for(int i = 0; i< fileList.size();i++)
 //	        		System.out.println(fileList.get(i).getName());
 
+	        	}else if(message.equalsIgnoreCase("sync")){
+	        		
 	        	}
 	        	
 	        	else{
@@ -131,6 +140,7 @@ public class ClientMain {
 					e.printStackTrace();
 				}
 				FileTuples tuple = new FileTuples(listOfFiles[i].getName(),checksum,new Date(listOfFiles[i].lastModified()));
+				tuple.setSize(listOfFiles[i].length());
 				fileList.add(tuple);
 				}
 			
