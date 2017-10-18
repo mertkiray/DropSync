@@ -132,19 +132,23 @@ public class MultiThreadedServer {
             	              	   
             	   
                }else if(clientCommand.equalsIgnoreCase("sendFile")){
-            	   
+            	   System.out.println("SEND FÝLE IS HERE");
+
             	   MultiThreadedDataServer dataServer = new MultiThreadedDataServer();
-            			   dataServer.start();       
+            	   Thread t = new Thread(dataServer);
+            	   t.start();       
                 
                 dos.writeUTF("started");
                 dos.flush();
                 
                }else if(clientCommand.equalsIgnoreCase("getFile")){
             	   
-            	   MultiThreadedDataServer dataServer = new MultiThreadedDataServer(true,"C:\\Users\\Mert\\Desktop\\asd.jpg");
-            			   
-            			   dataServer.start();
-            	   
+            	   MultiThreadedDataServer dataServer = new MultiThreadedDataServer(true,"C:\\Users\\Mert\\Desktop\\aaa.jpg");
+           	   
+            		Thread t = new Thread(dataServer);
+            		t.start();
+            		
+            		
             	   dos.writeUTF("started");
             	   dos.flush();
             	   

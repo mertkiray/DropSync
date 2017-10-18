@@ -12,9 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public class MultiThreadedDataServer extends Thread{
+public class MultiThreadedDataServer implements Runnable{
 ServerSocket myServerSocket;
-private boolean sendToClient = true;
+private boolean sendToClient = false;
 String fileToClient = null;
 boolean ServerOn = true;
 
@@ -54,11 +54,14 @@ public void run(){
 	         ClientServiceDataThread cliThread;
 	         if(!sendToClient){
 	          cliThread = new ClientServiceDataThread(clientSocket);
+	          Thread t = new Thread(cliThread);
+	          t.start();
 	         }
 	         else{
 	         cliThread = new ClientServiceDataThread(clientSocket,sendToClient,fileToClient);
+	         Thread t = new Thread(cliThread);
+	         t.start();
 	         }
-	         cliThread.start(); 
 	      } catch(IOException ioe) { 
 	         System.out.println("Exception found on accept. Ignoring. Stack Trace :"); 
 	         ioe.printStackTrace(); 
@@ -77,7 +80,7 @@ public void run(){
 
 
 
-class ClientServiceDataThread extends Thread{
+class ClientServiceDataThread implements Runnable{
 	   Socket myClientSocket;
 	   boolean m_bRunThread = true; 
 	 private  boolean sendToClient = false;

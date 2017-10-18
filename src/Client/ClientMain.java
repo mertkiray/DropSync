@@ -42,7 +42,7 @@ public class ClientMain {
 		   
 	        	}else if(message.equals("getFile")){
 	        			        
-	        		connectionToServer.SendForAnswer("sendFile");
+	        		connectionToServer.SendForAnswer("getFile");
 
 		        	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
 
@@ -115,7 +115,12 @@ public class ClientMain {
 //	        		for(int i = 0; i< fileList.size();i++)
 //	        		System.out.println(fileList.get(i).getName());
 
-	        	}else if(message.equalsIgnoreCase("sync")){
+	        	}else if(message.contains("sync")){
+	        		String[] messageParsed = message.split(" ");
+	        		String fileName = messageParsed[1];
+	        		
+	        		
+	        		
 	        		
 	        	}
 	        	
