@@ -32,14 +32,8 @@ public class ClientMain {
 	        		
 	        		String[] messageParsed = message.split(" ");
 	        		String fileName = messageParsed[1];
-	        		
-		        	connectionToServer.SendForAnswer("sendFile "+fileName);
+	        		sendFile(connectionToServer, fileName);
 		        	
-		        	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
-		        	
-		        	connectionToDataServer.Connect();
-		        		
-			        System.out.println(connectionToDataServer.sendFile(FOLLOWERPATH+fileName));
 		        
 		        
 		    //    connectionToDataServer.Disconnect();
@@ -47,68 +41,13 @@ public class ClientMain {
 	        	}else if(message.contains("getFile")){
 	        		String[] messageParsed = message.split(" ");
 	        		String fileName = messageParsed[1];
-	        		connectionToServer.SendForAnswer("getFile "+fileName);
-
-		        	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
-
-		        	connectionToDataServer.Connect();
-
-			        System.out.println(connectionToDataServer.getFile(FOLLOWERPATH+fileName));
+	        		getFile(connectionToServer, fileName);
 
 	        		
 	        	}
 	        	
 	        	else if(message.equalsIgnoreCase("sync check")){
-	        		
-	        		
-	        		ArrayList<FileTuples> masterFileList = (ArrayList<FileTuples>) connectionToServer.syncCheck("sync check");
-	        		ArrayList<FileTuples> clientFileList = getFilesFromFolder("DropSync1");
-	        		ArrayList<FileTuples> inconsistencies = new ArrayList<>();
-	        		FileTuples temp;
-	        		boolean found = false;
-	        		for(FileTuples m : masterFileList){
-	        			found = false;
-	        			for(FileTuples c : clientFileList){
-	        				if(m.getName().equals(c.getName())){
-	        					found = true;
-	        					if(m.getHash().equals(c.getHash())){
-	        						//consistent
-	        					}else{
-	        						//inconsistent
-	        						if(m.getUpdateDate().compareTo(c.getUpdateDate())>0){
-	        							//master newer
-	        							temp = m;
-	        							temp.setConsistency("Update(f)");
-	        							inconsistencies.add(temp);
-	        						}else{
-	        							//client newer
-	        							temp = c;
-	        							temp.setConsistency("Update(m)");
-	        							inconsistencies.add(temp);
-	        						}
-	        					}
-	        				}	        				
-		        			}	   
-	        			if(!found){
-	        				temp = m;
-							temp.setConsistency("Add(f)");
-							inconsistencies.add(temp);
-	        			}
-	        		}
-	        		
-	        		for(FileTuples c : clientFileList){
-	        			found = false;
-	        			for(FileTuples m : masterFileList){
-	        				if(c.getName().equals(m.getName())){
-	        					found=true;
-	        				}
-	        			}
-	        			if(!found){
-	        				temp = c;
-							temp.setConsistency("Add(m)");
-							inconsistencies.add(temp);
-	        			}
-	        		}
+	        		ArrayList<FileTuples> inconsistencies = syncCheck(connectionToServer);
 	        		double totalSize=0;
 	        		for(FileTuples tuple : inconsistencies){
 	        			System.out.println(tuple);
@@ -116,15 +55,21 @@ public class ClientMain {
 	        		}
 	        		
 	        		System.out.println("The total size of the updates is "+new DecimalFormat("#.##").format(totalSize/1048576)+" MB");
-//	        		System.out.println(fileList);
-//	        		for(int i = 0; i< fileList.size();i++)
-//	        		System.out.println(fileList.get(i).getName());
+	        		
 
 	        	}else if(message.contains("sync")){
 	        		String[] messageParsed = message.split(" ");
 	        		String fileName = messageParsed[1];
-	        		
-	        		
+	        		ArrayList<FileTuples> inconsistencies = syncCheck(connectionToServer);
+	        		for(FileTuples tuple : inconsistencies){
+	        			if(tuple.getName().equals(fileName)){
+	        				if(tuple.getConsistency().equalsIgnoreCase("add(f)") || tuple.getConsistency().equalsIgnoreCase("update(f)")){
+	        					getFile(connectionToServer, fileName);
+	        				}else if(tuple.getConsistency().equalsIgnoreCase("add(m)") || tuple.getConsistency().equalsIgnoreCase("update(m)")){
+	        					sendFile(connectionToServer, fileName);
+	        				}
+	        			}
+	        		}
 	        		
 	        		
 	        	}
@@ -200,6 +145,87 @@ public class ClientMain {
 	     
 	    //return complete hash
 	   return sb.toString();
+	}
+	
+	public static ArrayList<FileTuples> syncCheck(ConnectionToServer connectionToServer){
+		ArrayList<FileTuples> masterFileList = (ArrayList<FileTuples>) connectionToServer.syncCheck("sync check");
+		ArrayList<FileTuples> clientFileList = getFilesFromFolder("DropSync1");
+		ArrayList<FileTuples> inconsistencies = new ArrayList<>();
+		FileTuples temp;
+		boolean found = false;
+		for(FileTuples m : masterFileList){
+			found = false;
+			for(FileTuples c : clientFileList){
+				if(m.getName().equals(c.getName())){
+					found = true;
+					if(m.getHash().equals(c.getHash())){
+						//consistent
+					}else{
+						//inconsistent
+						if(m.getUpdateDate().compareTo(c.getUpdateDate())>0){
+							//master newer
+							temp = m;
+							temp.setConsistency("Update(f)");
+							inconsistencies.add(temp);
+						}else{
+							//client newer
+							temp = c;
+							temp.setConsistency("Update(m)");
+							inconsistencies.add(temp);
+						}
+					}
+				}	        				
+    			}	   
+			if(!found){
+				temp = m;
+				temp.setConsistency("Add(f)");
+				inconsistencies.add(temp);
+			}
+		}
+		
+		for(FileTuples c : clientFileList){
+			found = false;
+			for(FileTuples m : masterFileList){
+				if(c.getName().equals(m.getName())){
+					found=true;
+				}
+			}
+			if(!found){
+				temp = c;
+				temp.setConsistency("Add(m)");
+				inconsistencies.add(temp);
+			}
+		}
+		
+//		System.out.println(fileList);
+//		for(int i = 0; i< fileList.size();i++)
+//		System.out.println(fileList.get(i).getName());
+		return inconsistencies;
+	}
+	public static void getFile(ConnectionToServer connectionToServer, String fileName){
+		
+		connectionToServer.SendForAnswer("getFile "+fileName);
+
+    	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
+
+    	connectionToDataServer.Connect();
+
+        System.out.println(connectionToDataServer.getFile(FOLLOWERPATH+fileName));
+	}
+	
+	public static void sendFile(ConnectionToServer connectionToServer, String fileName){
+		connectionToServer.SendForAnswer("sendFile "+fileName);
+    	
+    	ConnectionToDataServer connectionToDataServer = new ConnectionToDataServer(ConnectionToDataServer.DEFAULT_SERVER_ADDRESS, ConnectionToDataServer.DEFAULT_SERVER_PORT);
+    	
+    	connectionToDataServer.Connect();
+    		
+        try {
+			System.out.println(connectionToDataServer.sendFile(FOLLOWERPATH+fileName));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	}
