@@ -1,12 +1,20 @@
 package Client;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -70,9 +78,29 @@ public class ClientMain {
 	        					getFile(connectionToServer, fileName);
 	        				}else if(tuple.getConsistency().equalsIgnoreCase("add(m)") || tuple.getConsistency().equalsIgnoreCase("update(m)")){
 	        					sendFile(connectionToServer, fileName);
+	        				}else if(tuple.getConsistency().equalsIgnoreCase("delete(f)")){
+	        					File file = new File(FOLLOWERPATH+fileName);
+	        					file.delete();
+	        				}else if(tuple.getConsistency().equalsIgnoreCase("delete(m)")){
+	        					System.out.println("silcem");
+	        					System.out.println(connectionToServer.SendForAnswer("delete "+fileName));
 	        				}
 	        			}
 	        		}
+	        		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
+	        		Date date = new Date();	     		   
+	     		   PrintWriter writer = null;
+	     		try {
+	     			writer = new PrintWriter("DropSyncAction", "UTF-8");
+	     		} catch (FileNotFoundException e) {
+	     			// TODO Auto-generated catch block
+	     			e.printStackTrace();
+	     		} catch (UnsupportedEncodingException e) {
+	     			// TODO Auto-generated catch block
+	     			e.printStackTrace();
+	     		}
+	     		   writer.println(dateFormat.format(date));
+	     		   writer.close();
 	        		
 	        		
 	        	}
@@ -151,6 +179,62 @@ public class ClientMain {
 	}
 	
 	public static ArrayList<FileTuples> syncCheck(ConnectionToServer connectionToServer){
+		
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
+ 	   
+ 	   
+ 	   
+ 	   BufferedReader br = null;
+   		FileReader fr = null;
+   		
+   		String lastActionDateString="";
+    	   try {
+
+   			//br = new BufferedReader(new FileReader(FILENAME));
+   			fr = new FileReader("DropSyncAction");
+   			br = new BufferedReader(fr);
+
+   			String sCurrentLine;
+
+   			while ((sCurrentLine = br.readLine()) != null) {
+   				lastActionDateString = sCurrentLine;
+   			}
+
+   		} catch (IOException e) {
+
+   			e.printStackTrace();
+
+   		} finally {
+
+   			try {
+
+   				if (br != null)
+   					br.close();
+
+   				if (fr != null)
+   					fr.close();
+
+   			} catch (IOException ex) {
+
+   				ex.printStackTrace();
+
+   			}
+
+   		}
+    	   Date date1 = new Date();
+    	
+    	Date lastActionDate = null;
+    	   try{
+    	   lastActionDate = dateFormat.parse(lastActionDateString);
+    	   }catch (ParseException e) {
+            e.printStackTrace();
+    	   }	
+		
+		
+		
+		
+		
 		ArrayList<FileTuples> masterFileList = (ArrayList<FileTuples>) connectionToServer.syncCheck("sync check");
 		ArrayList<FileTuples> clientFileList = getFilesFromFolder("DropSync1");
 		ArrayList<FileTuples> inconsistencies = new ArrayList<>();
@@ -180,9 +264,15 @@ public class ClientMain {
 				}	        				
     			}	   
 			if(!found){
-				temp = m;
-				temp.setConsistency("Add(f)");
-				inconsistencies.add(temp);
+				if(lastActionDate.before(m.updateDate)){
+					temp = m;
+					temp.setConsistency("Add(f)");
+					inconsistencies.add(temp);
+				}else if(lastActionDate.after(m.updateDate)){
+					temp = m;
+					temp.setConsistency("Delete(m)");
+					inconsistencies.add(temp);
+				}
 			}
 		}
 		
@@ -194,9 +284,15 @@ public class ClientMain {
 				}
 			}
 			if(!found){
-				temp = c;
-				temp.setConsistency("Add(m)");
-				inconsistencies.add(temp);
+				if(lastActionDate.before(c.updateDate)){
+					temp = c;
+					temp.setConsistency("Add(m)");
+					inconsistencies.add(temp);
+				}else if(lastActionDate.after(c.updateDate)){
+					temp = c;
+					temp.setConsistency("Delete(f)");
+					inconsistencies.add(temp);
+				}
 			}
 		}
 		

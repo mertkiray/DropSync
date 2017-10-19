@@ -23,8 +23,8 @@ import Client.FileTuples;
 public class ConsoleReader implements Runnable{
 
 	Scanner sc;
-	public final static String FOLLOWERPATH = "C:\\Users\\Mert\\Desktop\\DropSync1\\";
-	public final static String MASTERPATH = "C:\\Users\\Mert\\Desktop\\DropSync\\";
+	public final static String FOLLOWERPATH = Constants.Constants.FOLLOWERPATH;
+	public final static String MASTERPATH = Constants.Constants.MASTERPATH;
 	
 	public ConsoleReader(){
 		

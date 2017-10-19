@@ -142,7 +142,6 @@ public class ConnectionToDataServer
    	
    		try {
 			while((read = dataInputStream.read(buffer)) > -1) {
-				System.out.println("read " + read + " bytes.");
 				fos.write(buffer, 0, read);
 			}
 			

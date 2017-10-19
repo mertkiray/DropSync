@@ -44,6 +44,11 @@ public class MultiThreadedServer {
          System.out.println("Could not create server socket on port 8888. Quitting.");
          System.exit(-1);
       } 
+      
+      ConsoleReader consoleReader = new ConsoleReader();
+      
+      Thread a = new Thread(consoleReader);
+      a.start();
 		
       Calendar now = Calendar.getInstance();
       SimpleDateFormat formatter = new SimpleDateFormat(
@@ -61,6 +66,7 @@ public class MultiThreadedServer {
          }  
       } 
       try { 
+    	  a.interrupt();
          myServerSocket.close(); 
          System.out.println("Server Stopped"); 
       } catch(Exception ioe) { 
@@ -261,8 +267,16 @@ public class MultiThreadedServer {
             	   
             	              	   
             	   
-               }else if(clientCommand.contains("sendFile")){
-            	   System.out.println("SEND FÝLE IS HERE");
+               }else if(clientCommand.contains("delete")){
+            	   String[] messageParsed = clientCommand.split(" ");
+	        		String fileName = messageParsed[1];
+            	   File file = new File(MASTERPATH+fileName);
+					file.delete();
+					dos.writeUTF("File Deleted.");
+					dos.flush();
+				
+               }
+               else if(clientCommand.contains("sendFile")){
             	   String[] messageParsed = clientCommand.split(" ");
 	        		String fileName = messageParsed[1];
 
@@ -270,7 +284,7 @@ public class MultiThreadedServer {
             	   Thread t = new Thread(dataServer);
             	   t.start();       
                 
-                dos.writeUTF("started");
+                dos.writeUTF("File Sent: "+fileName);
                 dos.flush();
                 
                }else if(clientCommand.contains("getFile")){

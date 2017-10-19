@@ -130,7 +130,6 @@ class ClientServiceDataThread implements Runnable{
 	            if(!sendToClient){
 	            	
 	                fos = new FileOutputStream(MASTERPATH+fileName);
-	            	System.out.println("SEND SEND");
 	            	
 	          		byte[] buffer = new byte[4096];
 	          		int filesize = 15123; // Send file size in separate msg
@@ -140,7 +139,6 @@ class ClientServiceDataThread implements Runnable{
 	          	
 	          		while((read = dis.read(buffer)) > -1) {
 	          			
-	          			System.out.println("read " + read + " bytes.");
 	          			fos.write(buffer, 0, read);
 	          		}
 	          		
@@ -148,7 +146,6 @@ class ClientServiceDataThread implements Runnable{
 	          		
 	            } else{
 	            
-	            	System.out.println("SEND ASD");
 
 	            	System.out.println("Started Sending");
 
