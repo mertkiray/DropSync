@@ -57,7 +57,10 @@ public class ClientMain {
 	        		System.out.println("The total size of the updates is "+new DecimalFormat("#.##").format(totalSize/1048576)+" MB");
 	        		
 
-	        	}else if(message.contains("sync")){
+	        	}else if(message.contains("dropbox sync")){
+	        		System.out.println(connectionToServer.SendForAnswer(message));
+	        	}
+	        	else if(message.contains("sync")){
 	        		String[] messageParsed = message.split(" ");
 	        		String fileName = messageParsed[1];
 	        		ArrayList<FileTuples> inconsistencies = syncCheck(connectionToServer);

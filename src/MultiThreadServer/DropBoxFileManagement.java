@@ -15,6 +15,7 @@ import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v1.DbxEntry;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.CreateFolderErrorException;
+import com.dropbox.core.v2.files.DeleteErrorException;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.FolderMetadata;
 import com.dropbox.core.v2.files.ListFolderContinueErrorException;
@@ -109,6 +110,18 @@ public class DropBoxFileManagement {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteFile(String path){
+		try {
+			client.files().delete(path);
+		} catch (DeleteErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DbxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

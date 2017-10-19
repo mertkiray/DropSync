@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -13,8 +14,13 @@ import java.io.PrintWriter;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -119,12 +125,135 @@ public class MultiThreadedServer {
             	   scanner.close();
             
                }else if(clientCommand.equalsIgnoreCase("dropbox sync")){
+            	   
+            	   SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
+            	   
+            	   
+            	   
+            	   BufferedReader br = null;
+              		FileReader fr = null;
+              		
+              		String lastActionDateString="";
+               	   try {
+
+              			//br = new BufferedReader(new FileReader(FILENAME));
+              			fr = new FileReader("LastAction");
+              			br = new BufferedReader(fr);
+
+              			String sCurrentLine;
+
+              			while ((sCurrentLine = br.readLine()) != null) {
+              				lastActionDateString = sCurrentLine;
+              			}
+
+              		} catch (IOException e) {
+
+              			e.printStackTrace();
+
+              		} finally {
+
+              			try {
+
+              				if (br != null)
+              					br.close();
+
+              				if (fr != null)
+              					fr.close();
+
+              			} catch (IOException ex) {
+
+              				ex.printStackTrace();
+
+              			}
+
+              		}
+               	   Date date1 = new Date();
+               	
+               	Date lastActionDate = null;
+               	   try{
+               	   lastActionDate = dateFormat.parse(lastActionDateString);
+               	   }catch (ParseException e) {
+                       e.printStackTrace();
+               	   }
+               	   
+            	   
+            	   
+            	   
+            	   
+            	   
+            	   
+            	           	   
+            	   
+            	   
+            	   
+            	   
+            	   
+            	   
+            	   
+            	   
+            	   String ans= "The following files are going to be synchronized with the Dropbox\n";
+            	   boolean updateNeeded = false;
             	   ArrayList<Metadata> alreadyUploadedFiles = dropBoxFileManagement.getAlreadyUploadedFiles();
             	   ArrayList<FileTuples> filesInFolder = getFilesFromFolder("DropSync");
-            	   System.out.println(alreadyUploadedFiles);
+            	   boolean found;
             	   for(FileTuples x : filesInFolder){
-            		   System.out.println(x);
+            		   found = false;
+            		   for(Metadata y : alreadyUploadedFiles){
+            			   if(x.getName().equals(y.getName())){
+            				   found=true;
+            				   
+            				   if(lastActionDate.before(x.getUpdateDate())){
+            					   //newer
+            					   updateNeeded=true;
+                    			   dropBoxFileManagement.deleteFile(y.getPathLower());
+            					   dropBoxFileManagement.uploadFile(x.getName(), MASTERPATH+x.getName());
+            					   ans+=x.getName()+" "+"update" +" "+ x.getSize()/1048576+" MB\n";
+            				   }
+            			   }
+            		   }
+            		   if(!found){
+            			   //upload to dropbox
+            			   updateNeeded=true;
+            			   System.out.println("upload "+x.getName());            			   
+
+            			   dropBoxFileManagement.uploadFile(x.getName(), MASTERPATH+x.getName());
+            			   ans+=x.getName()+" "+"add" +" "+ x.getSize()+"\n";
+            			   
+            		   }
             	   }
+            	   
+            	   for(Metadata y : alreadyUploadedFiles){
+            		   found = false;
+            		   for(FileTuples x : filesInFolder){
+            			   if(x.getName().equals(y.getName())){
+            				   found = true;
+            			   }
+            		   }
+            		   if(!found){
+            			   updateNeeded=true;
+            			   dropBoxFileManagement.deleteFile(y.getPathLower());
+            			   ans+=y.getName()+" "+"delete" +" "+ "\n";
+            		   }
+            	   }
+            	   
+            	   
+            	   
+            	   
+            	   
+            	   
+            	   ans+="Synchronization done with Dropbox";
+            	   if(!updateNeeded){
+            		   ans="No update is needed. Already synced!";
+            	   }
+            	   dos.writeUTF(ans);
+    			   dos.flush();
+    			   Date date = new Date();
+    			   
+
+    			   
+    			   PrintWriter writer = new PrintWriter("lastAction", "UTF-8");
+    			   writer.println(dateFormat.format(date));
+    			   writer.close();
 //            	   dropBoxFileManagement.uploadFile("meme.jpg", PATH+"meme.jpg");
             	   
             	   
